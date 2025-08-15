@@ -1,5 +1,11 @@
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+// import ThemeToggle from "./components/ThemeToggle";
+import AppHeader from "./components/AppHeader";
+import AppFooter from "./components/AppFooter";
+import { AuthProvider } from "../contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,11 +24,20 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen transition-colors duration-300 overflow-hidden`}
+        style={{ overscrollBehavior: 'none', height: '100vh', background: 'var(--background)', color: 'var(--foreground)' }}
       >
-        {children}
+        <AuthProvider>
+          <div className="flex flex-col min-h-screen w-full overflow-hidden">
+            <AppHeader />
+            <main className="flex-1 w-full overflow-hidden pt-16 sm:pt-20 pb-12 sm:pb-16">
+              {children}
+            </main>
+            <AppFooter />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
