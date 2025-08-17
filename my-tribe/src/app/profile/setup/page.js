@@ -28,6 +28,46 @@ const CheckIcon = () => (
 );
 
 export default function ProfileSetup() {
+  // Field-level validation for onBlur
+  const validateField = (field) => {
+    const value = formData[field];
+    const alphaRegex = /^[A-Za-z]+$/;
+    const alphaNumRegex = /^[A-Za-z0-9]+$/;
+    const phoneRegex = /^\d{10}$/;
+    const today = new Date();
+    let error = '';
+    switch (field) {
+      case 'firstName':
+        if (!value.trim()) error = 'First name is required';
+        else if (!alphaRegex.test(value)) error = 'First name can only contain alphabets';
+        else if (value.length > 15) error = 'First name cannot exceed 15 characters';
+        break;
+      case 'lastName':
+        if (!value.trim()) error = 'Last name is required';
+        else if (!alphaRegex.test(value)) error = 'Last name can only contain alphabets';
+        else if (value.length > 15) error = 'Last name cannot exceed 15 characters';
+        break;
+      case 'username':
+        if (!value.trim()) error = 'Username is required';
+        else if (!alphaNumRegex.test(value)) error = 'Username can only be alphanumeric';
+        else if (value.length > 15) error = 'Username cannot exceed 15 characters';
+        break;
+      case 'dateOfBirth':
+        if (value) {
+          const dob = new Date(value);
+          const age = today.getFullYear() - dob.getFullYear() - (today < new Date(dob.setFullYear(today.getFullYear())) ? 1 : 0);
+          if (age < 15) error = 'You must be at least 15 years old';
+        }
+        break;
+      case 'phoneNumber':
+        if (value && !phoneRegex.test(value)) error = 'Phone number must be exactly 10 digits';
+        break;
+      default:
+        break;
+    }
+    setErrors((prev) => ({ ...prev, [field]: error }));
+    return error;
+  };
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
@@ -76,25 +116,74 @@ export default function ProfileSetup() {
 
   const validateStep = (step) => {
     const newErrors = {};
-    
+    // Helper regex
+    const alphaRegex = /^[A-Za-z]+$/;
+    const alphaNumRegex = /^[A-Za-z0-9]+$/;
+    const phoneRegex = /^\d{10}$/;
+    const today = new Date();
     switch (step) {
       case 1:
-        if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-        if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-        if (!formData.username.trim()) newErrors.username = 'Username is required';
-        if (formData.username.length < 3) newErrors.username = 'Username must be at least 3 characters';
+        // First Name: Only alphabets, max 15 chars, mandatory
+        if (!formData.firstName.trim()) {
+          newErrors.firstName = 'First name is required';
+        } else if (!alphaRegex.test(formData.firstName)) {
+          newErrors.firstName = 'First name can only contain alphabets';
+        } else if (formData.firstName.length > 15) {
+          newErrors.firstName = 'First name cannot exceed 15 characters';
+        }
+
+        // Last Name: Only alphabets, max 15 chars, mandatory
+        if (!formData.lastName.trim()) {
+          newErrors.lastName = 'Last name is required';
+        } else if (!alphaRegex.test(formData.lastName)) {
+          newErrors.lastName = 'Last name can only contain alphabets';
+        } else if (formData.lastName.length > 15) {
+          newErrors.lastName = 'Last name cannot exceed 15 characters';
+        }
+
+        // Username: max 15 chars, only alphanumeric
+        if (!formData.username.trim()) {
+          newErrors.username = 'Username is required';
+        } else if (!alphaNumRegex.test(formData.username)) {
+          newErrors.username = 'Username can only be alphanumeric';
+        } else if (formData.username.length > 15) {
+          newErrors.username = 'Username cannot exceed 15 characters';
+        }
+
+        // DOB: Cannot be less than 15 years of age
+        if (formData.dateOfBirth) {
+          const dob = new Date(formData.dateOfBirth);
+          const age = today.getFullYear() - dob.getFullYear() - (today < new Date(dob.setFullYear(today.getFullYear())) ? 1 : 0);
+          if (age < 15) {
+            newErrors.dateOfBirth = 'You must be at least 15 years old';
+          }
+        }
+
+        // Phone Number: only 10 numeric values, min/max length 10
+        if (formData.phoneNumber) {
+          if (!phoneRegex.test(formData.phoneNumber)) {
+            newErrors.phoneNumber = 'Phone number must be exactly 10 digits';
+          }
+        }
         break;
       case 2:
         if (!formData.bio.trim()) newErrors.bio = 'Tell us a bit about yourself';
         if (formData.bio.length < 10) newErrors.bio = 'Bio should be at least 10 characters';
         break;
     }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
+    // Validate all fields in step 1 on Next click
+    if (currentStep === 1) {
+      validateField('firstName');
+      validateField('lastName');
+      validateField('username');
+      validateField('dateOfBirth');
+      validateField('phoneNumber');
+    }
     if (validateStep(currentStep)) {
       setCurrentStep(prev => Math.min(prev + 1, 3));
     }
@@ -178,6 +267,9 @@ export default function ProfileSetup() {
                 }`}>
                   {step.title}
                 </div>
+                {errors.dateOfBirth && (
+                  <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth}</p>
+                )}
               </div>
               {index < steps.length - 1 && (
                 <div className={`h-px bg-gray-300 flex-1 mx-4 ${
@@ -233,6 +325,9 @@ export default function ProfileSetup() {
                     <UserIcon />
                   )}
                 </div>
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
+                )}
                 <button
                   type="button"
                   className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-700"
@@ -251,6 +346,7 @@ export default function ProfileSetup() {
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    onBlur={() => validateField('firstName')}
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     style={{
                       backgroundColor: 'var(--card-bg)',
@@ -272,6 +368,7 @@ export default function ProfileSetup() {
                     type="text"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    onBlur={() => validateField('lastName')}
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     style={{
                       backgroundColor: 'var(--card-bg)',
@@ -294,6 +391,7 @@ export default function ProfileSetup() {
                   type="text"
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  onBlur={() => validateField('username')}
                   className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   style={{
                     backgroundColor: 'var(--card-bg)',
@@ -316,10 +414,11 @@ export default function ProfileSetup() {
                     type="date"
                     value={formData.dateOfBirth}
                     onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                    onBlur={() => validateField('dateOfBirth')}
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     style={{
                       backgroundColor: 'var(--card-bg)',
-                      borderColor: 'var(--border-color)',
+                      borderColor: errors.dateOfBirth ? '#ef4444' : 'var(--border-color)',
                       color: 'var(--card-text)',
                     }}
                   />
@@ -333,10 +432,11 @@ export default function ProfileSetup() {
                     type="tel"
                     value={formData.phoneNumber}
                     onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                    onBlur={() => validateField('phoneNumber')}
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     style={{
                       backgroundColor: 'var(--card-bg)',
-                      borderColor: 'var(--border-color)',
+                      borderColor: errors.phoneNumber ? '#ef4444' : 'var(--border-color)',
                       color: 'var(--card-text)',
                     }}
                     placeholder="+1 (555) 123-4567"
