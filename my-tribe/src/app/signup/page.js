@@ -37,7 +37,7 @@ const EyeOffIcon = () => (
 );
 
 export default function SignUp() {
-  const { signInWithGoogle, signUpWithEmail, loading, error } = useAuth();
+  const { signInWithGoogle, signUpWithEmail, loading, error, user } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
@@ -46,18 +46,46 @@ export default function SignUp() {
   });
   const [formError, setFormError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showComingSoonDialog, setShowComingSoonDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleGoogleSignUp = async () => {
+    console.log('=== GOOGLE BUTTON CLICKED ===');
+    console.log('isSubmitting:', isSubmitting);
+    console.log('signInWithGoogle function:', typeof signInWithGoogle);
+    
+    if (isSubmitting) {
+      console.log('Already submitting, returning');
+      return;
+    }
+    
     try {
-      await signInWithGoogle();
-      router.push('/'); // Redirect to home page after successful signup
+      console.log('Starting Google sign up process');
+      setIsSubmitting(true);
+      setFormError('');
+      console.log('About to call signInWithGoogle');
+      const result = await signInWithGoogle();
+      console.log('Google sign up successful:', result);
+      // For now, always redirect to profile setup for new Google users
+      // We'll check profile completion later
+      router.push('/profile/setup');
     } catch (error) {
       console.error('Google sign up failed:', error);
+      setFormError(`Google sign up failed: ${error.message || 'Please try again.'}`);
+    } finally {
+      console.log('Google sign up process finished');
+      setIsSubmitting(false);
     }
+  };
+
+  const handleAppleSignUp = () => {
+    setShowComingSoonDialog(true);
   };
 
   const handleEmailSignUp = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    
     setFormError('');
 
     if (!formData.fullName || !formData.email || !formData.password) {
@@ -71,10 +99,15 @@ export default function SignUp() {
     }
 
     try {
+      setIsSubmitting(true);
       await signUpWithEmail(formData.email, formData.password, formData.fullName);
-      router.push('/'); // Redirect to home page after successful signup
+      // New users will always need to complete their profile
+      router.push('/profile/setup');
     } catch (error) {
       console.error('Email sign up failed:', error);
+      setFormError('Sign up failed. Please check your information and try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -115,7 +148,7 @@ export default function SignUp() {
           <div className="space-y-4">
             <button
               onClick={handleGoogleSignUp}
-              disabled={loading}
+              disabled={isSubmitting}
               className="signup-btn-google w-full flex items-center justify-center gap-3 py-3 px-4 border rounded-lg font-medium transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 borderColor: '#4285F4',
@@ -126,23 +159,22 @@ export default function SignUp() {
               <div className="social-login-icon">
                 <GoogleIcon />
               </div>
-              {loading ? 'Signing up...' : 'Continue with Google'}
+              {isSubmitting ? 'Signing up...' : 'Continue with Google'}
             </button>
             
             <button
-              className="signup-btn-apple w-full flex items-center justify-center gap-3 py-3 px-4 border rounded-lg font-medium transition-all duration-200 hover:shadow-md opacity-50 cursor-not-allowed"
+              onClick={handleAppleSignUp}
+              className="signup-btn-apple w-full flex items-center justify-center gap-3 py-3 px-4 border rounded-lg font-medium transition-all duration-200 hover:shadow-md hover:bg-gray-50 cursor-pointer"
               style={{
                 borderColor: '#000000',
                 color: 'var(--card-text)',
                 background: 'var(--card-bg)',
               }}
-              disabled
-              title="Apple Sign-in coming soon"
             >
               <div className="social-login-icon">
                 <AppleIcon />
               </div>
-              Continue with Apple (Coming Soon)
+              Continue with Apple
             </button>
           </div>
 
@@ -162,7 +194,7 @@ export default function SignUp() {
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 required
-                disabled={loading}
+                disabled={isSubmitting}
                 className="w-full py-3 px-4 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   borderColor: 'var(--color-accent)',
@@ -179,7 +211,7 @@ export default function SignUp() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                disabled={loading}
+                disabled={isSubmitting}
                 className="w-full py-3 px-4 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   borderColor: 'var(--color-accent)',
@@ -196,7 +228,7 @@ export default function SignUp() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
-                disabled={loading}
+                disabled={isSubmitting}
                 className="w-full py-3 px-4 pr-12 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   borderColor: 'var(--color-accent)',
@@ -208,7 +240,7 @@ export default function SignUp() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={loading}
+                disabled={isSubmitting}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 disabled:opacity-50"
                 style={{ color: 'var(--card-text)' }}
               >
@@ -221,14 +253,14 @@ export default function SignUp() {
             </div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: 'var(--color-accent)',
                 color: 'white',
               }}
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {isSubmitting ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
@@ -251,6 +283,44 @@ export default function SignUp() {
           </p>
         </div>
       </div>
+
+      {/* Coming Soon Dialog */}
+      {showComingSoonDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div 
+            className="bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl"
+            style={{ 
+              background: 'var(--card-bg)',
+              borderColor: 'var(--color-accent)',
+              borderWidth: '1px'
+            }}
+          >
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+                <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--card-text)' }}>
+                Coming Soon!
+              </h3>
+              <p className="text-sm mb-6" style={{ color: 'var(--card-text)' }}>
+                Apple Sign-in is currently under development. We'll notify you once it's available!
+              </p>
+              <button
+                onClick={() => setShowComingSoonDialog(false)}
+                className="w-full py-2 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-md"
+                style={{
+                  backgroundColor: 'var(--color-accent)',
+                  color: 'white',
+                }}
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

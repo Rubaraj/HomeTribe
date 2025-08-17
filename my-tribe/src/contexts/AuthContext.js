@@ -20,6 +20,8 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let mounted = true;
+    
     const unsubscribe = authService.onAuthStateChanged(async (authUser) => {
       try {
         if (authUser) {
@@ -35,7 +37,9 @@ export const AuthProvider = ({ children }) => {
         console.error('Auth state change error:', err);
         setError(err.message);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     });
 
@@ -45,16 +49,31 @@ export const AuthProvider = ({ children }) => {
       setError(err.message);
     });
 
-    return () => unsubscribe();
+    // Fallback: Set loading to false after 3 seconds if auth state hasn't changed
+    const fallbackTimer = setTimeout(() => {
+      if (mounted) {
+        console.log('Auth state fallback: setting loading to false');
+        setLoading(false);
+      }
+    }, 3000);
+
+    return () => {
+      mounted = false;
+      clearTimeout(fallbackTimer);
+      unsubscribe();
+    };
   }, []);
 
   const signInWithGoogle = async () => {
     try {
       setError(null);
       setLoading(true);
+      console.log('Starting Google sign-in...');
       const result = await authService.signInWithGoogle();
+      console.log('Google sign-in successful:', result);
       return result;
     } catch (err) {
+      console.error('Google sign-in error in context:', err);
       setError(err.message);
       throw err;
     } finally {

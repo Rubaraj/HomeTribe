@@ -1,0 +1,57 @@
+
+//Start-------------------------------------------------------------------------------
+//Google Sign in successfull response user data
+{
+    "user": {
+        "uid": "bhabtisqe9eheYp4pDaNZijxi0B3",
+        "email": "mrubarajan@gmail.com",
+        "emailVerified": true,
+        "displayName": "Rubarajan M",
+        "isAnonymous": false,
+        "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocKpO3gKGMMAJRe9LyVOknFI4CzCMD8hvqbrGz5txJ0HUV-Q6ug=s96-c",
+        "providerData": [
+            {
+                "providerId": "google.com",
+                "uid": "102660274899166121090",
+                "displayName": "Rubarajan M",
+                "email": "mrubarajan@gmail.com",
+                "phoneNumber": null,
+                "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocKpO3gKGMMAJRe9LyVOknFI4CzCMD8hvqbrGz5txJ0HUV-Q6ug=s96-c"
+            }
+        ],
+        "stsTokenManager": {
+            "refreshToken": "AMf-vBzSJYs_OLdna_1oIK9TYPvjJQHBKnst02Kxb-zcBNKOCad83gLnJNzVWv3Nt3T_eOKHuX6ZIFPrypRd5t6Q8gwvWC9teXmXGKTo2LMh6MmVsLkVdagt3kC6pt5lYK_4PgrgOeqAxduiRAV8Tg_Og8NmaVusxCkfjz7OOrmIe_z-0YYSuzmQ04PubsUrsiD6haDBUhj7wuV2KAC6m_JKFDtCGWwAWGt6LCXJjXFp0aF92wmXvFnpPOmRTK0mY1b4e-aQRVolhnE1Dg7x0nVmnLcVUI_2gn8wCYtMxHJroYLoD2K7bnHFjskgZd7QvWiYdEBKCkxO-Ab3MuYht6ukRbImbsMWK2BiKO6dzs6wdeHVOJ4VU-iVlMzAjfJQfx7PwBg2Dc6v-zMb3xZ7Ig3hUDuy0Mr7qbryNQaK0q4liLlefn1ZE9c",
+            "accessToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjU3YmZiMmExMWRkZmZjMGFkMmU2ODE0YzY4NzYzYjhjNjg3NTgxZDgiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiUnViYXJhamFuIE0iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3BPM2dLR01NQUpSZTlMeVZPa25GSTRDekNNRDhodnFickd6NXR4SjBIVVYtUTZ1Zz1zOTYtYyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9teXRyaWJlLThkMTZiIiwiYXVkIjoibXl0cmliZS04ZDE2YiIsImF1dGhfdGltZSI6MTc1NTQyODA4NywidXNlcl9pZCI6ImJoYWJ0aXNxZTllaGVZcDRwRGFOWmlqeGkwQjMiLCJzdWIiOiJiaGFidGlzcWU5ZWhlWXA0cERhTlppanhpMEIzIiwiaWF0IjoxNzU1NDI4MDg3LCJleHAiOjE3NTU0MzE2ODcsImVtYWlsIjoibXJ1YmFyYWphbkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjEwMjY2MDI3NDg5OTE2NjEyMTA5MCJdLCJlbWFpbCI6WyJtcnViYXJhamFuQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6Imdvb2dsZS5jb20ifX0.RJfCPE9hgOW5PzvmnJaUFaL4RH16Ac2_b-AQbf_VIdrq7JxQFCv8suamOf_b6Y4pcehoShP8rUhYJaRq-iXRdzFNri0mpmIQCdImVwK9v0Cz4RsEbR-XUvwaDzRaiL2p-0lhevmK1Pb4qA5cNvh74Y9pBWisqelPjIdIMpDu-lfKfcuPKcnDlOuXZp_W8N1dz1IYttlR2pwrULDNWV0FJjHCjWE00wLHsrsEmnsnJ1QoNO5oT_tJM-Ujw2mS14IBKmhREkhAtsZCHsGhBE32fejx2wU0wHJd5uIaujXMG8r8xKi69Ef-Uh6kUqO8DBh6izNjf3fU_PgbJKyie6HaAA",
+            "expirationTime": 1755431686892
+        },
+        "createdAt": "1755224348660",
+        "lastLoginAt": "1755428004431",
+        "apiKey": "AIzaSyDcD2YUaSmLjz2W75s7e0b0D0uX7FTuzLs",
+        "appName": "[DEFAULT]"
+    },
+    "userData": {
+        "uid": "bhabtisqe9eheYp4pDaNZijxi0B3",
+        "email": "mrubarajan@gmail.com",
+        "displayName": "Rubarajan M",
+        "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocKpO3gKGMMAJRe9LyVOknFI4CzCMD8hvqbrGz5txJ0HUV-Q6ug=s96-c",
+        "provider": "google",
+        "googleAccessToken": "ya29.A0AS3H6NykZgdzjV8kXke_JutxZaNcCanWxSshdISY6n0Mfwk-WbgrwEd2HwqnnjXeq_3gNf5PW8BTTfDuUW-Gdp_n6QZ3iwL4nBbhkVVf8XXmO-6R2HqTJ8QYoTqpJ2d4-33Qu6u0on4jVwfGdEOV1uPayEyE07Zz02Ud_5EfRlSZNrUe9b9rFeU1aY_UB5MjcnHzt9wvaCgYKASISARUSFQHGX2MiV173dnWqgq27j44C1lp4cQ0207",
+        "emailVerified": true,
+        "socialAccounts": [
+            {
+                "platform": "google",
+                "accountId": "bhabtisqe9eheYp4pDaNZijxi0B3",
+                "email": "mrubarajan@gmail.com",
+                "displayName": "Rubarajan M",
+                "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocKpO3gKGMMAJRe9LyVOknFI4CzCMD8hvqbrGz5txJ0HUV-Q6ug=s96-c"
+            }
+        ],
+        "lastLoginAt": "2025-08-17T10:54:46.968Z",
+        "preferences": {
+            "theme": "auto",
+            "notifications": true
+        }
+    }
+}
+
+//End-------------------------------------------------------------------------------
